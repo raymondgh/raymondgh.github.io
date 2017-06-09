@@ -1,0 +1,56 @@
+<html>
+<head>
+<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+<meta content="utf-8" http-equiv="encoding">
+<script src="./pgeData.js"></script>
+</head>
+<script>
+
+
+
+var setOfDates = [...new Set(pgeData.map(item => item.FIELD2))];
+var cleanData = [];
+
+function totalUsage (entries) {
+
+	var myNewSet = [];
+
+	entries.forEach(function(item){
+		myNewSet.push(parseFloat(item.FIELD5))
+	})
+
+	var sum = myNewSet.reduce(function(acc, val) {
+		return acc + val;
+	}, 0);
+
+	return Math.round(sum * 1e2)/ 1e2
+	};
+
+
+function filteredEntries (entries, passingDate) {
+
+	return entries.filter(function(entry, date) {
+
+			date = passingDate
+
+		return entry.FIELD2 == date})
+	}
+
+
+function createPair (date, usage) {
+	return {"date": new Date(date),
+			"usage": usage}
+}
+
+function togetherNow (dates, entries) {
+	dates.forEach(function(date) {
+		cleanData.push(createPair(date, totalUsage(filteredEntries(pgeData, date))))
+	})
+}
+
+
+
+
+
+</script>
+</html>
