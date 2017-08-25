@@ -1,0 +1,66 @@
+<html>
+<head>
+<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+<meta content="utf-8" http-equiv="encoding">
+<meta name="viewport" content="width=device-width, user-scalable=no">
+<!-- <script type="text/javascript" src="./shirts.js"></script>
+ --></head>
+<body style="margin:0;">
+
+<div id="image-grid">
+</div>
+
+
+<style>
+</style>
+
+
+
+<script>
+
+
+var wardrobe = []
+var imageWidth = "200px"
+
+
+//takes an integer and produces a png file name
+function constructFilename (number) {
+	return "IMG(" + number + ").png"
+}
+
+//takes a png file name and a directory and produces a file path
+function createImagePath (filename, directory) {
+	return directory + filename
+}
+
+//takes a file path and produces an html img element
+function createImageElement (imagePath) {
+	var imageElement = document.createElement("IMG")
+	imageElement.setAttribute("src", imagePath);
+	imageElement.setAttribute("width", imageWidth)
+	return imageElement
+}
+
+//takes a number of files and produces a list of image elements
+function createImageElementList (numberOfFiles) {
+	for (var i = numberOfFiles; i > 0; i--) {
+		wardrobe.push(createImageElement(createImagePath(constructFilename(i),"./images/shirts/")));
+	};
+	return wardrobe
+}
+
+//takes list of image elements and appends them as children to body
+function displayImages (listOfImagePaths) {
+	listOfImagePaths.forEach(function(element) {
+		document.getElementById("image-grid").appendChild(element);
+	});
+}
+
+
+
+window.onload = createImageElementList(137)
+window.onload = displayImages(wardrobe)
+
+</script>
+</body>
+</html>
