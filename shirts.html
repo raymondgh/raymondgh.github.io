@@ -12,6 +12,17 @@
 
 
 <style>
+
+#image-grid {
+	display: flex;
+	flex-wrap: wrap;
+}
+
+.shirt {
+	flex-grow: 1;
+}
+
+
 </style>
 
 
@@ -37,7 +48,7 @@ function createImagePath (filename, directory) {
 function createImageElement (imagePath) {
 	var imageElement = document.createElement("IMG")
 	imageElement.setAttribute("src", imagePath);
-	imageElement.setAttribute("width", imageWidth)
+	imageElement.className = "shirt";
 	return imageElement
 }
 
