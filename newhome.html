@@ -1,16 +1,38 @@
 <html>
 <head>
-<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
-<meta content="utf-8" http-equiv="encoding">
+<title>Ray</title>
 <meta name="viewport" content="width=device-width, user-scalable=no">
-<script type="text/javascript" src="./color.js"></script>
+<link rel="shortcut icon" href="/images/favicon.ico">
 <link rel="stylesheet" type="text/css" href="css/style.css">
 </head>
-<body style="margin:0;">
 
-<div id="image-grid">
+<body id="time" class="graystyle" style="margin:0;">
+<div id="landing">
+	<div id="top">
+	</div>
+	<div id="bottom">
+	</div>
 </div>
 
+
+<style>
+#landing {
+	display: flex;
+	flex-direction: column;
+/*	height: 100vh;
+*/}
+
+#top {
+	background-color: white;
+	height: 40vh;
+}
+
+#bottom {
+	background-color: rgb(55,255,0);
+	height: 60vh;
+}
+
+</style>
 
 <style>
 
@@ -19,8 +41,6 @@
 	flex-wrap: wrap;
 	justify-content: center;
 	overflow: hidden;
-	height: 100vh;
-
 }
 
 .shirt {
@@ -31,9 +51,6 @@
 
 
 </style>
-
-
-
 <script>
 
 
@@ -80,41 +97,10 @@ window.onload = createImageElementList(137)
 window.onload = displayImages(wardrobe)
 
 </script>
+
+
+
+
+<script src="timecolor.js" type="text/javascript"></script>
 </body>
 </html>
-
-<!-- chrome
-
-ignores flex-basis
-distorts aspect ratio with flex-grow
-
-
-
-600 / 3 = 200
-599 / 2 = 298.5
-
-800 / 4 = 200
-799 / 3 = 266.328
-
-1000 / 5 = 200
-999 / 4 = 249.5
-
-1200 / 6 = 200
-1199 / 5 = 239.797  
-
-Ray Harris
-
-Projects
-
-Pure Cardio
-Budgie
-World Flags
-
-Little hacks
-
-Time-Color
-Ray Fund
-Shirts
-PGE Data
-Calendars
- -->

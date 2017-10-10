@@ -1,0 +1,228 @@
+@font-face {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Open Sans'), local('OpenSans'), url(http://fonts.gstatic.com/s/opensans/v10/cJZKeOuBrn4kERxqtaUH3ZBw1xU1rKptJj_0jans920.woff2) format('woff2'), url(https://web.archive.org/web/20161023105530im_/http://fonts.gstatic.com/s/opensans/v10/cJZKeOuBrn4kERxqtaUH3bO3LdcAZYWl9Si6vvxL-qU.woff) format('woff');
+}
+@font-face {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 600;
+  src: local('Open Sans Semibold'), local('OpenSans-Semibold'), url(http://fonts.gstatic.com/s/opensans/v10/MTP_ySUJH_bn48VBG8sNShampu5_7CjHW5spxoeN3Vs.woff2) format('woff2'), url(https://web.archive.org/web/20161023105530im_/http://fonts.gstatic.com/s/opensans/v10/MTP_ySUJH_bn48VBG8sNSqRDOzjiPcYnFooOUGCOsRk.woff) format('woff');
+}
+
+body {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 18px;
+    line-height: 1.4em;
+    font-weight: 200;
+}
+
+form {
+    margin: 40px 0 25px 0;
+}
+
+.container {
+    padding-left: 80px;
+    padding-right: 80px;
+}
+
+nav.navbar {
+    border-radius: 0;
+    background-color: #3ad3dd;
+    border-color: #3ad3dd;
+    margin-bottom: 0;
+}
+
+nav.navbar .navbar-brand,
+nav.navbar .navbar-nav a {
+    color: #fff;
+}
+
+nav.navbar .navbar-brand {
+    font-weight: 600;
+}
+
+nav.navbar .navbar-toggle {
+    border: 0;
+}
+
+nav.navbar .navbar-toggle:hover,
+nav.navbar .navbar-toggle:focus {
+    background-color: #259dd9;
+}
+
+#header {
+    background-color: #3ad3dd;
+    color: #fff;
+    text-align: center;
+    max-height: 725px;
+    overflow: hidden;
+}
+
+#header h2 {
+    font-size: 3em;
+    margin: 20px 0 0 0;
+}
+
+.preview {
+    width: 338px;
+}
+
+.preview-left {
+    float: left;
+}
+
+.store_links {
+    padding: 40px;
+}
+
+.store_links a {
+    display: inline-block;
+    text-decoration: none;
+    color: #000;
+}
+
+.store_links a.coming-soon {
+    color: #666;
+}
+
+.store_links a.coming-soon img {
+    opacity: 0.6;
+}
+
+.video-overlay {
+    position: relative;
+}
+
+.video-overlay video {
+    position: absolute;
+    top: 86px;
+    max-width: 296px;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+}
+
+.video-overlay.left video {
+    left: 21px;
+    margin: 0;
+}
+
+.btn.btn-teal {
+    color: #fff;
+    background-color: #3ad3dd;
+    border: 1px solid #3ad3dd;
+}
+
+.btn.btn-gold {
+    color: #fff;
+    background-color: #eec60d;
+    border: 1px solid #eec60d;
+}
+
+.btn.btn-green {
+    color: #fff;
+    background-color: #5AE138;
+    border: 1px solid #5AE138;
+}
+
+#about {
+    padding: 40px 0;
+}
+
+#about h2 {
+    margin-top: 0;
+}
+
+#additional-features {
+    background-color: #259dd9;
+    color: #fff;
+    height: 465px;
+    overflow: hidden;
+    padding: 40px 0;
+}
+
+#follow {
+    padding: 40px 0;
+    text-align: center;
+}
+
+footer {
+    background-color: #3f3f3f;
+}
+
+footer a,
+footer a:hover {
+    color: #fff;
+    text-decoration: none;
+}
+
+footer p {
+    margin: 20px 0;
+}
+
+@media screen and (max-width: 991px) {
+
+    .container {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+
+    #header {
+        height: 590px;
+    }
+
+    #additional-features {
+        height: 570px;
+    }
+
+    .preview {
+        width: 250px;
+    }
+
+}
+
+@media screen and (max-width: 767px) {
+
+    .navbar-inverse .navbar-collapse.collapse,
+    .navbar-inverse .navbar-collapse.collapsing {
+        border-top: 1px solid #259dd9;
+        background-color: #259dd9;
+    }
+
+    #header {
+        height: 680px;
+    }
+
+    #additional-features {
+        height: 660px;
+    }
+
+    #header h2 {
+        font-size: 2.5em;
+    }
+
+    #about,
+    #additional-features,
+    #follow {
+        padding: 20px 0;
+    }
+
+    #about h2,
+    #additional-features h2 {
+        margin: 5px 0;
+    }
+
+    footer {
+        font-size: 0.9em;
+    }
+}
+/*
+     FILE ARCHIVED ON 11:09:36 Oct 23, 2016 AND RETRIEVED FROM THE
+     INTERNET ARCHIVE ON 19:11:19 Oct 10, 2017.
+     JAVASCRIPT APPENDED BY WAYBACK MACHINE, COPYRIGHT INTERNET ARCHIVE.
+
+     ALL OTHER CONTENT MAY ALSO BE PROTECTED BY COPYRIGHT (17 U.S.C.
+     SECTION 108(a)(3)).
+*/
