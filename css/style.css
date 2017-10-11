@@ -5,3 +5,7 @@
 .extremestyle a:link {color:#0b8fff;}    /* unvisited link */
 .extremestyle a:visited {color:#0b8fff;}  /* visited link */
 .extremestyle a:hover {color:#0bdcff;}   /* mouse over link */
+
+p {
+	width: 529px;
+}
