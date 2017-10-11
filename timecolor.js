@@ -8,7 +8,7 @@ var timedbackground = grayscale(timesegment)
 function timeFunction()
 {
 	x=document.getElementById("time")          // Find the element
-	x.style.backgroundColor=timedbackground;          // Change the style
+	x.style.backgroundColor="#" + timedbackground;          // Change the style
 	x.style.color=night(d.getHours());			// change style again
 	x.className=twilight();
 }
