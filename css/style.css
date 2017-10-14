@@ -7,5 +7,5 @@
 .extremestyle a:hover {color:#0bdcff;}   /* mouse over link */
 
 p {
-	width: 529px;
+	max-width: 529px;
 }
