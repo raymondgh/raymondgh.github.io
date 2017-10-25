@@ -55,7 +55,7 @@ function createImageElementList (numberOfFiles, directory) {
 	return wardrobe
 }
 
-//takes a list of image elements and returns a randomized-order list of the same elements
+//takes a list of img elements and returns a randomized-order list of the same elements
 function randomizeImageElementList (imageElementList) {
 	var randomWardrobe = []
 	while (imageElementList.length > 0) {
@@ -64,15 +64,15 @@ function randomizeImageElementList (imageElementList) {
 	return randomWardrobe
 }
 
-//takes list of image elements and appends them as children to body
-function displayImages (listOfImagePaths) {
+//takes list of img elements and a partent element and appends the IMGs as children to body
+function displayImages (listOfImagePaths, parentID) {
 	listOfImagePaths.forEach(function(element) {
-		document.getElementById("image-grid").appendChild(element);
+		document.getElementById(parentID).appendChild(element);
 		imageWidth = element.width;
 	});
 }
 
-window.onload = displayImages(randomizeImageElementList(createImageElementList(137,"./images/shirts/")))
+window.onload = displayImages(randomizeImageElementList(createImageElementList(137,"./images/shirts/")),"image-grid")
 
 </script>
 <script type="text/javascript" src="./timecolor.js"></script>
