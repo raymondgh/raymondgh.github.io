@@ -6,13 +6,9 @@
 <link rel="stylesheet" type="text/css" href="./css/style.css">
 </head>
 <body style="margin:0;" id="time">
-
-<div id="image-grid">
-</div>
-
+<div id="image-grid"></div>
 
 <style>
-
 #image-grid {
 	display: flex;
 	flex-wrap: wrap;
@@ -27,14 +23,11 @@
 	max-width: 200px;
 	height: auto;
 }
-
-
 </style>
 
 
 
 <script>
-
 //takes an integer and produces a png file name
 function constructFilename (number) {
 	return "IMG(" + number + ").png"
@@ -83,42 +76,12 @@ window.onload = displayImages(randomizeImageElementList(createImageElementList(1
 
 </script>
 <script type="text/javascript" src="./timecolor.js"></script>
-
 </body>
 </html>
 
-<!-- chrome
+<!-- chrome problems:
 
 ignores flex-basis
 distorts aspect ratio with flex-grow
 
-
-
-600 / 3 = 200
-599 / 2 = 298.5
-
-800 / 4 = 200
-799 / 3 = 266.328
-
-1000 / 5 = 200
-999 / 4 = 249.5
-
-1200 / 6 = 200
-1199 / 5 = 239.797  
-
-Ray Harris
-
-Projects
-
-Pure Cardio
-Budgie
-World Flags
-
-Little hacks
-
-Time-Color
-Ray Fund
-Shirts
-PGE Data
-Calendars
  -->
