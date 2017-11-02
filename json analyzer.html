@@ -1,0 +1,29 @@
+<html>
+<meta charset="UTF-8">
+<body id="my-body">
+
+</body>
+<script src="events.js" type="text/javascript"></script>
+
+<script>
+
+//takes a list of event objects and returns a list of unique IDs appearing in that list
+function uniqueIDs(events) {
+	var listOfUserIDs = [];
+
+	events.forEach(function(item){
+		listOfUserIDs.push(item.userid)
+	})
+
+
+	return Array.from(new Set (listOfUserIDs))
+}
+
+
+window.onload = document.getElementById("my-body").innerHTML = uniqueIDs(eventsJSON)
+
+
+
+
+</script>
+</html>
