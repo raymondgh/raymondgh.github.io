@@ -1,9 +1,126 @@
 <html>
 <meta charset="UTF-8">
-<body id="my-body">
+<body>
+
+
+
+
+
+
+<div id="container">
+	<div class="summary">
+
+		<div class="row" id="title-row">
+			<div class="column-1">
+				<strong>Unique IDs</strong>
+			</div>
+			<div class="column-2" id="list-of-ids">
+				{current-date}
+			</div>
+		</div>
+
+		<div class="row" id="total-sessions-row">
+			<div class="column-1">
+				Number of sessions
+			</div>
+			<div class="column-2" id="total-sessions">
+				{Current-Balance}
+			</div>
+		</div>
+
+				<div class="row" id="rate-row">
+			<div class="column-1">
+				Average Duration			
+			</div>
+			<div class="column-2" id="average-session">
+				{interest-rate}
+			</div>
+		</div>
+<!-- 
+				<div class="row" id="original-row">
+			<div class="column-1">
+				Original Amount
+			</div>
+			<div class="column-2" id="original-amount">
+				{original-amount}
+			</div>
+		</div>
+
+				<div class="row" id="disbursement-row">
+			<div class="column-1">
+				Disbursement Date
+			</div>
+			<div class="column-2" id="disbursement-date">
+				{disbursement-date}
+			</div>
+		</div> -->
+
+
+
+
+
+	</div>
+</div>
+
+
+
+
+
+
+
+
+
+
 
 </body>
 <script src="events.js" type="text/javascript"></script>
+
+
+<style>
+
+#container {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+	height: 100%;
+}
+
+.summary {
+	display: flex;
+	flex-direction: column;
+}
+
+.row {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-around;
+	height: 30px;
+}
+
+.column-1 {
+	display: flex;
+	width: 1fr;
+	width: 150px;
+}
+
+.column-2 {
+	display: flex;
+	width: 2fr;
+		width: 150px;
+}
+
+
+#title-row {
+	height: 50px;
+}
+
+
+
+
+
+</style>
+
 
 <script>
 
@@ -20,8 +137,95 @@ function uniqueIDs(events) {
 }
 
 
-window.onload = document.getElementById("my-body").innerHTML = uniqueIDs(eventsJSON)
+//takes a uniqueID and list of events and returns a list of events for that uniqueID
+function ownedEvents(uniqueID, events) {
+	var owned = [];
 
+	events.forEach(function(event) {
+		if (event.userid == uniqueID) {
+			owned.push(event);
+		}
+	});
+
+	return owned
+}
+
+//takes a list of event objects and returns a list of event objects with session duration
+function durableEvents(events) {
+
+	var durables = [];
+
+	events.forEach(function(event) {
+		if (event.custom_params.duration) {
+			durables.push(event);
+		}
+	});
+
+	return durables
+}
+
+
+//takes a list of durable events and returns their average duration
+function averageDurationOfEvents(events) {
+
+	var totalTime = 0
+	events.forEach(function(event) {
+		totalTime += parseInt(event.custom_params.duration, 10)
+	})
+
+
+	return (totalTime / events.length).toFixed(2)
+}
+
+
+window.onload = document.getElementById("list-of-ids").innerHTML = uniqueIDs(eventsJSON)
+window.onload = document.getElementById("total-sessions").innerHTML = durableEvents(eventsJSON).length
+window.onload = document.getElementById("average-session").innerHTML = averageDurationOfEvents(durableEvents(eventsJSON))
+
+
+
+// function() {
+// 	var newReleases = [
+// 			{
+// 				"id": 70111470,
+// 				"title": "Die Hard",
+// 				"boxart": "http://cdn-0.nflximg.com/images/2891/DieHard.jpg",
+// 				"uri": "http://api.netflix.com/catalog/titles/movies/70111470",
+// 				"rating": [4.0],
+// 				"bookmark": []
+// 			},
+// 			{
+// 				"id": 654356453,
+// 				"title": "Bad Boys",
+// 				"boxart": "http://cdn-0.nflximg.com/images/2891/BadBoys.jpg",
+// 				"uri": "http://api.netflix.com/catalog/titles/movies/70111470",
+// 				"rating": [5.0],
+// 				"bookmark": [{ id: 432534, time: 65876586 }]
+// 			},
+// 			{
+// 				"id": 65432445,
+// 				"title": "The Chamber",
+// 				"boxart": "http://cdn-0.nflximg.com/images/2891/TheChamber.jpg",
+// 				"uri": "http://api.netflix.com/catalog/titles/movies/70111470",
+// 				"rating": [4.0],
+// 				"bookmark": []
+// 			},
+// 			{
+// 				"id": 675465,
+// 				"title": "Fracture",
+// 				"boxart": "http://cdn-0.nflximg.com/images/2891/Fracture.jpg",
+// 				"uri": "http://api.netflix.com/catalog/titles/movies/70111470",
+// 				"rating": [5.0],
+// 				"bookmark": [{ id: 432534, time: 65876586 }]
+// 			}
+// 		];
+
+//   return newReleases.map(function(video) { return { id: video.id, title: video.title }; });
+// }
+		
+
+
+// events.map(function(event) {return {event.custom_params.duration}; });
 
 
 
