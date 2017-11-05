@@ -1,0 +1,40 @@
+
+#container {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+	height: 100%;
+}
+
+.summary {
+	display: flex;
+	flex-direction: column;
+}
+
+.row {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-around;
+	height: 30px;
+}
+
+.column-1 {
+	display: flex;
+	width: 1fr;
+	width: 150px;
+}
+
+.column-2 {
+	display: flex;
+	width: 2fr;
+		width: 150px;
+}
+
+
+#title-row {
+	height: 50px;
+}
+
+
+
