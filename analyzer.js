@@ -70,7 +70,6 @@ function createOptionElement(key) {
 }
 
 //takes a list of keys and produces a list of html option elements
-
 function createOptionElementList (listOfKeys) {
 	var options = []
 	for (var i = listOfKeys.length - 1; i >= 0; i--) {
@@ -86,7 +85,7 @@ function listOptions(listOfOptionElements, parentID) {
 	})
 }
 
-// takes a json key and list of parent/uncle objects and returns all the keys of the child json object
+// takes a key and list of objects and returns all the key values for those objects
 function childrenKeys(parentKey, json) {
 	var children = []
 
