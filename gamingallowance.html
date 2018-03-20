@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Game Budget</title>
+  <meta name="viewport" content="width=device-width, user-scalable=no">
+</head>
+<body onload="javascript:updateBalance()">
+  <div id="container">
+    <div id="balance">
+      <div class="section-value" id="balance-value">
+        000.00 HOURS
+      </div>
+    </div>
+  </div>
+</body>
+</html>
+
+<style>
+body {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 100vw;
+	height: 100vh;
+	margin: 0;
+	padding: 0;
+}
+
+#container {
+	background-color: white;
+	display: flex;
+	flex-direction: row;
+	justify-content: space-around;
+  font-family: "Courier New", Courier, monospace;
+
+}
+
+.section-value {
+	background-color: black;
+	color: white;
+}
+
+</style>
+
+<script>
+function updateBalance() {
+  fetch("https://maqoqmm2m7.execute-api.us-east-1.amazonaws.com/prod/budget", {})
+  .then(function(response) {
+    if (!response.ok) {
+      console.log(response);
+    } else {
+      response.json()
+      .then(function(data) {
+        let balance = (data[1] - data[0] + 1713.03).toFixed(2).toString();
+
+        if (balance < 10) {
+          balance = 0 + balance
+        }
+
+        if (balance < 100) {
+          balance = 0 + balance
+        }
+
+        document.getElementById("balance-value").innerHTML = balance + " HOURS";
+      })
+    }
+  })
+}
+</script>
