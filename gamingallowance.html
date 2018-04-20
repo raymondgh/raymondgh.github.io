@@ -52,7 +52,7 @@ function updateBalance() {
     } else {
       response.json()
       .then(function(data) {
-        let balance = (data[1] - data[0] + 1710.58).toFixed(2).toString();
+        let balance = (data[1] - data[0] + 1708.58).toFixed(2).toString();
 
         if (balance < 10) {
           balance = 0 + balance
