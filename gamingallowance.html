@@ -4,8 +4,11 @@
   <meta charset="UTF-8">
   <title>Gaming Allowance</title>
   <meta name="viewport" content="width=device-width, user-scalable=no">
+
 </head>
-<body onload="javascript:updateBalance()">
+<body id="time" class="graystyle" onload="javascript:updateBalance()">
+  <script src="timecolor.js" type="text/javascript"></script>
+
   <div id="container">
     <div id="balance">
       <div class="section-value" id="balance-value">
@@ -54,14 +57,12 @@ function updateBalance() {
       .then(function(data) {
         let balance = (data[1] - data[0] + 1708.58).toFixed(2).toString();
 
-        if (balance < 10) {
-          balance = 0 + balance
+        if (balance < 0) {
+          balance = "-" + balance.substring(1).padStart(6, "0")
+          document.getElementById("balance-value").style.color = "red";
+        } else {
+          balance = balance.padStart(6, "0")
         }
-
-        if (balance < 100) {
-          balance = 0 + balance
-        }
-
         document.getElementById("balance-value").innerHTML = balance + " HOURS";
       })
     }
