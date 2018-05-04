@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Commute Calculator</title>
+  <meta name="viewport" content="width=device-width, user-scalable=no">
+
+</head>
+<body id="time" class="graystyle" onload="drawStarterTable(commutes)">
+
+  <div id="container">
+    <div id="address-entry">
+      <div id="home-label">Home Address</div>
+      <input id="autocomplete-home" value="601 Laguna Honda Blvd, San Francisco, CA 94127" type="text"></input>
+    </div>
+
+
+    <div id="commute-table"></div>
+
+      <div id="commute-totals">
+        <div id="total-title">Total</div>
+        <div id="total-value">0 Minutes</div>
+      </div>
+
+      <div id="add-commute">
+        <input id="new-commute-name" placeholder="Name" type="text"></input>
+        <input id="autocomplete" placeholder="Address" type="text"></input>
+      </div>
+
+  </div>
+
+</body>
+</html>
+
+<style>
+body {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 100vw;
+	height: 100vh;
+	margin: 0;
+	padding: 0;
+}
+
+#container {
+	background-color: white;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-around;
+  font-family: "Courier New", Courier, monospace;
+  width: 800px;
+
+}
+
+#commute-table {
+  display: flex;
+  flex-direction: column;
+}
+
+
+#commute-totals {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+#address-entry {
+  display: flex;
+  flex-direction: row;
+  align-self: center;
+}
+
+#add-commute {
+  display: flex;
+  flex-direction: row;
+}
+
+#new-commute-name {
+  width: 20%;
+}
+#autocomplete {
+  width: 80%;
+}
+
+#autocomplete-home {
+  width: 80%;
+}
+
+#home-label {
+  width: 20%;
+}
+
+#address-entry {
+  width: 100%;
+}
+
+.commute-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+#commute-name {
+  width: 10px;
+}
+
+#commute-destination {
+  width: 80%;
+}
+
+#commute-duration {
+  width: 10%;
+}
+
+</style>
+
+<script>
+
+
+let commutes = {"Ray": {"address":"601 Laguna Honda Blvd, San Francisco, CA 94127, USA"},
+                "Sasi": {"address": "2111 Mission Street, San Francisco, CA, USA"},
+                "Dave": {"address": "140 New Montgomery St, San Francisco, CA 94105, USA"},
+                "Keith": {"address": "1801 Harbor Bay Pkwy, Alameda, CA 94502"},
+                "John": {"address": "580 Howard St, San Francisco, CA 94105, USA"}};
+
+
+var autocomplete, autocompleteHome;
+
+function initAutocomplete() {
+  // Create the autocomplete object, restricting the search to geographical
+  // location types.
+  autocomplete = new google.maps.places.Autocomplete(
+    /** @type {!HTMLInputElement} */
+    (document.getElementById('autocomplete')), {
+      types: ['geocode']
+    });
+
+  // When the user selects an address from the dropdown, populate the address
+  // fields in the form.
+  autocomplete.addListener('place_changed', addAddress);
+
+  autocompleteHome = new google.maps.places.Autocomplete(
+    /** @type {!HTMLInputElement} */
+    (document.getElementById('autocomplete-home')), {
+      types: ['geocode']
+    });
+  autocompleteHome.addListener('place_changed', updateHome);
+}
+
+
+
+// update home address and all table rows accordingly
+function updateHome() {
+
+  // remove all commutes from dom
+  var i = document.getElementsByClassName("commute-row").length
+  for (i = document.getElementsByClassName("commute-row").length - 1; i >= 0 ; i--) {
+    document.getElementsByClassName("commute-row").item(i).remove()
+  }
+
+  // add all commutes from json
+  drawStarterTable(commutes)
+
+    // update total
+  updateTotalCommute();
+
+}
+
+
+// update total commute minutes
+function updateTotalCommute () {
+
+  var total = 0
+
+  var i = 0
+  for (i = 0; i < document.getElementsByClassName("commute-duration").length; i++) {
+    total += parseFloat(document.getElementsByClassName("commute-duration").item(i).innerHTML)
+  }
+
+  document.getElementById("total-value").innerHTML = total.toFixed(2).toString() + " Minutes"
+}
+
+
+// gets the public transit commute time in seconds from point a to point b
+function getCommute(origin, destination) {
+
+  var o = origin.replace(/,/g, '').replace(/ /g, '+')
+  var d = destination.replace(/,/g, '').replace(/ /g, '+')
+
+  url = "https://ksojk0xw35.execute-api.us-east-1.amazonaws.com/prod/getCommute?origin=" + o + "&destination=" + d
+
+  return new Promise(function(resolve, reject) {
+
+    fetch(url, {})
+    .then(function(response) {
+      if (!response.ok) {
+        console.log(response);
+      } else {
+        response.json()
+        .then(function(data) {
+          commuteSeconds = data[0].routes[0].legs[0].duration.value
+          resolve(commuteSeconds)
+        })
+      }
+    })
+
+  })
+}
+
+
+// add a new address to the list
+function addAddress(destination) {
+  // Get the place details from the autocomplete object.
+  var origin = document.getElementById("autocomplete-home").value
+  var destination = autocomplete.getPlace().formatted_address
+  var name = document.getElementById('new-commute-name').value
+
+  commutes[name] = {"address": destination}
+
+  // get the commute, then create the table row
+  getCommute(origin, destination).then(e => createCommuteRow(name, destination, e));
+
+  // clear input fields
+  document.getElementById('new-commute-name').value = ''
+  document.getElementById('autocomplete').value = ''
+}
+
+
+// draw the starter table
+function drawStarterTable(data) {
+  Object.keys(data).forEach(element => {
+    getCommute(document.getElementById("autocomplete-home").value, commutes[element].address)
+    .then(e => createCommuteRow(element, commutes[element].address, e));
+  })
+
+}
+
+
+// update ui with new entry
+function createCommuteRow(name, destination, duration) {
+
+  duration = (duration / 60).toFixed(2).toString() + " Minutes"
+
+  var newCommuteRow = document.createElement("div");
+  newCommuteRow.classList.add("commute-row")
+
+  var newCommuteName = document.createElement("div")
+  newCommuteName.classList.add("commute-name")
+  newCommuteName.innerHTML = name
+
+  var newCommuteDestination = document.createElement("div")
+  newCommuteDestination.classList.add("commute-destination")
+  newCommuteDestination.innerHTML = destination
+
+  var newCommuteDuration = document.createElement("div")
+  newCommuteDuration.classList.add("commute-duration")
+  newCommuteDuration.innerHTML = duration
+
+  var newCommuteRemoveButton = document.createElement("a")
+  newCommuteRemoveButton.innerHTML = "remove"
+  newCommuteRemoveButton.classList.add("commute-remove-button")
+  newCommuteRemoveButton.addEventListener("click", removeCommute, false);
+
+  newCommuteRow.appendChild(newCommuteName);
+  newCommuteRow.appendChild(newCommuteDestination);
+  newCommuteRow.appendChild(newCommuteDuration);
+  newCommuteRow.appendChild(newCommuteRemoveButton);
+
+  document.getElementById("commute-table").appendChild(newCommuteRow)
+
+  updateTotalCommute();
+}
+
+
+
+
+
+// remove commute from json and from dom
+function removeCommute() {
+  delete commutes[this.parentNode.firstChild.innerHTML];
+  this.parentNode.remove();
+  updateTotalCommute();
+}
+
+</script>
+
+
+
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBWujSqt_slzEJgRX8e5xKHF0AFf0THV3Y&libraries=places&callback=initAutocomplete" async defer></script>
