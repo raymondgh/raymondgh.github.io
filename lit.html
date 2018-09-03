@@ -8,7 +8,7 @@
 
 
 
-<canvas id="tutorial" width="150" height="150"></canvas>
+<canvas id="canvas" width="1040" height="800"></canvas>
 <p>awsd/arrow keys/space bar</p>
 
 
@@ -16,8 +16,9 @@
 
 <script>
 
-var ctx = document.getElementById('tutorial').getContext('2d');
-
+var canvas = document.getElementById("canvas");
+var ctx = canvas.getContext("2d");
+let units = 40
 
 var hero = {
 	speed: 256, // movement in pixels per second
@@ -31,20 +32,249 @@ var hero = {
 var render = function () {
 
   	ctx.globalCompositeOperation = 'destination-over';
-  	ctx.clearRect(0, 0, 150, 150); // clear canvas
-	// draw the background images
-	ctx.fillStyle = 'rgb(200, 0, 0)';
-	ctx.fillRect(10, 10, 50, 50);
+	ctx.clearRect(0,0,canvas.width,canvas.height); // clear canvas
 
-	ctx.fillStyle = 'rgba(0, 0, 200, 0.5)';
-	ctx.fillRect(30, 30, 50, 50);
 
-	// draw the hero
-	ctx.fillStyle = 'rgba(0, 0, 200, 0.5)';
-	ctx.globalCompositeOperation = "destination-in";
-	ctx.fillRect(hero.x, hero.y, 10, 50);
+
+	ctx.strokeStyle = "#000";
+
+	// draw the environment
+	segments.forEach(segment => {
+		ctx.beginPath();
+		ctx.moveTo(segment.a.x * units, segment.a.y * units);
+		ctx.lineTo(segment.b.x * units, segment.b.y * units);
+		ctx.stroke();
+
+	})
+
+
+	// Ray from center of screen to mouse
+	let ray = {
+		a:{x:hero.x,y:hero.y},
+		b:{x:Mouse.x,y:Mouse.y}
+	};
+
+	// Find CLOSEST intersection
+	var closestIntersect = null;
+	for(var i=0;i<segments.length;i++){
+		var intersect = getIntersection(ray,segments[i]);
+		if(!intersect) continue;
+		if(!closestIntersect || intersect.param<closestIntersect.param){
+			closestIntersect=intersect;
+		}
+	}
+	var intersect = closestIntersect;
+
+
+
+
+	// Draw red laser
+	ctx.strokeStyle = "#dd3838";
+	ctx.beginPath();
+	ctx.moveTo(hero.x,hero.y);
+	ctx.lineTo(intersect.x,intersect.y);
+	ctx.stroke();
+	
+	// Draw red dot
+	ctx.fillStyle = "#dd3838";
+	ctx.beginPath();
+    ctx.arc(intersect.x, intersect.y, 4, 0, 2*Math.PI, false);
+    ctx.fill();
+
+	// // draw the hero
+	// ctx.fillStyle = 'rgba(0, 0, 200, 1)';
+	// ctx.globalCompositeOperation = "destination-in";
+	// ctx.fillRect(hero.x, hero.y, 200, 200);
+
+	// // outline the hero too
+ //  	ctx.globalCompositeOperation = 'destination-over';
+	// ctx.strokeRect(hero.x, hero.y, 200, 200);
+
+
 };
 
+
+// Find intersection of RAY & SEGMENT
+function getIntersection(ray,segment){
+
+	// RAY in parametric: Point + Direction*T1
+	var r_px = ray.a.x;
+	var r_py = ray.a.y;
+	var r_dx = ray.b.x-ray.a.x;
+	var r_dy = ray.b.y-ray.a.y;
+
+	// SEGMENT in parametric: Point + Direction*T2
+	var s_px = segment.a.x * units;
+	var s_py = segment.a.y * units;
+	var s_dx = segment.b.x * units-segment.a.x * units;
+	var s_dy = segment.b.y * units-segment.a.y * units;
+
+	// Are they parallel? If so, no intersect
+	var r_mag = Math.sqrt(r_dx*r_dx+r_dy*r_dy);
+	var s_mag = Math.sqrt(s_dx*s_dx+s_dy*s_dy);
+	
+	if( r_dx/r_mag==s_dx/s_mag && 
+		r_dy/r_mag==s_dy/s_mag)
+		{ // Directions are the same.
+		return null;
+	}
+
+	// SOLVE FOR T1 & T2
+	// r_px+r_dx*T1 = s_px+s_dx*T2 && r_py+r_dy*T1 = s_py+s_dy*T2
+	// ==> T1 = (s_px+s_dx*T2-r_px)/r_dx = (s_py+s_dy*T2-r_py)/r_dy
+	// ==> s_px*r_dy + s_dx*T2*r_dy - r_px*r_dy = s_py*r_dx + s_dy*T2*r_dx - r_py*r_dx
+	// ==> T2 = (r_dx*(s_py-r_py) + r_dy*(r_px-s_px))/(s_dx*r_dy - s_dy*r_dx)
+	var T2 = (r_dx*(s_py-r_py) + r_dy*(r_px-s_px))/(s_dx*r_dy - s_dy*r_dx);
+	var T1 = (s_px+s_dx*T2-r_px)/r_dx;
+
+	// Must be within parametic whatevers for RAY/SEGMENT
+	if(T1<0) return null;
+	if(T2<0 || T2>1) return null;
+
+
+	// Return the POINT OF INTERSECTION
+	return {
+		x: r_px+r_dx*T1,
+		y: r_py+r_dy*T1,
+		param: T1
+	};
+
+}
+
+
+// LINE SEGMENTS
+var segments = [
+
+	// Canvas
+	{a:{x:0,y:0}, b:{x:canvas.width,y:0}},
+	{a:{x:canvas.width,y:0}, b:{x:canvas.width,y:canvas.height}},
+	{a:{x:canvas.width,y:canvas.height}, b:{x:0,y:canvas.height}},
+	{a:{x:0,y:canvas.height}, b:{x:0,y:0}},
+
+	// Polygon #1
+	{a:{x:1,y:1}, b:{x:3,y:1}},
+	{a:{x:3,y:1}, b:{x:1,y:3}},
+	{a:{x:1,y:3}, b:{x:1,y:1}},
+
+	// Polygon #2
+	{a:{x:4,y:1}, b:{x:5,y:1}},
+	{a:{x:5,y:1}, b:{x:5,y:5}},
+	{a:{x:5,y:5}, b:{x:1,y:5}},
+	{a:{x:1,y:5}, b:{x:1,y:4}},
+	{a:{x:1,y:4}, b:{x:4,y:1}},
+
+	// Polygon #3
+	{a:{x:13,y:1}, b:{x:14,y:1}},
+	{a:{x:14,y:1}, b:{x:14,y:3}},
+	{a:{x:14,y:3}, b:{x:13,y:3}},
+	{a:{x:13,y:3}, b:{x:13,y:1}},
+
+	// Polygon #4
+	{a:{x:21,y:2}, b:{x:24,y:2}},
+	{a:{x:24,y:2}, b:{x:24,y:3}},
+	{a:{x:24,y:3}, b:{x:21,y:3}},
+	{a:{x:21,y:3}, b:{x:21,y:2}},
+
+	// Polygon #5
+	{a:{x:7,y:5}, b:{x:8,y:5}},
+	{a:{x:8,y:5}, b:{x:8,y:9}},
+	{a:{x:8,y:9}, b:{x:7,y:9}},
+	{a:{x:7,y:9}, b:{x:7,y:5}},
+
+	// Polygon #6
+	{a:{x:10,y:4}, b:{x:17,y:4}},
+	{a:{x:17,y:4}, b:{x:17,y:5}},
+	{a:{x:17,y:5}, b:{x:10,y:5}},
+	{a:{x:10,y:5}, b:{x:10,y:4}},
+
+	// Polygon #7
+	{a:{x:21,y:6}, b:{x:22,y:6}},
+	{a:{x:22,y:6}, b:{x:22,y:7}},
+	{a:{x:22,y:7}, b:{x:21,y:7}},
+	{a:{x:21,y:7}, b:{x:21,y:6}},
+
+	// Polygon #8
+	{a:{x:10,y:7}, b:{x:11,y:7}},
+	{a:{x:11,y:7}, b:{x:11,y:11}},
+	{a:{x:11,y:11}, b:{x:10,y:11}},
+	{a:{x:10,y:11}, b:{x:10,y:7}},
+
+	// Polygon #9
+	{a:{x:13,y:7}, b:{x:14,y:7}},
+	{a:{x:14,y:7}, b:{x:14,y:11}},
+	{a:{x:14,y:11}, b:{x:13,y:11}},
+	{a:{x:13,y:11}, b:{x:13,y:7}},
+
+	// Polygon #10
+	{a:{x:17,y:7}, b:{x:18,y:7}},
+	{a:{x:18,y:7}, b:{x:18,y:10}},
+	{a:{x:18,y:10}, b:{x:23,y:10}},
+	{a:{x:23,y:10}, b:{x:23,y:11}},
+	{a:{x:23,y:11}, b:{x:17,y:11}},
+	{a:{x:17,y:11}, b:{x:17,y:7}},
+
+	// Polygon #11
+	{a:{x:3,y:11}, b:{x:7,y:11}},
+	{a:{x:7,y:11}, b:{x:7,y:15}},
+	{a:{x:7,y:15}, b:{x:3,y:15}},
+	{a:{x:3,y:15}, b:{x:3,y:11}},
+
+	// Polygon #12
+	{a:{x:12,y:13}, b:{x:20,y:13}},
+	{a:{x:20,y:13}, b:{x:20,y:14}},
+	{a:{x:20,y:14}, b:{x:12,y:14}},
+	{a:{x:12,y:14}, b:{x:12,y:13}},
+
+	// Polygon #13
+	{a:{x:23,y:15}, b:{x:24,y:15}},
+	{a:{x:24,y:15}, b:{x:24,y:16}},
+	{a:{x:24,y:16}, b:{x:23,y:16}},
+	{a:{x:23,y:16}, b:{x:23,y:15}},
+
+	// Polygon #14
+	{a:{x:9,y:16}, b:{x:11,y:16}},
+	{a:{x:11,y:16}, b:{x:11,y:18}},
+	{a:{x:11,y:18}, b:{x:9,y:18}},
+	{a:{x:9,y:18}, b:{x:9,y:16}},
+
+	// Polygon #15
+	{a:{x:14,y:16}, b:{x:16,y:16}},
+	{a:{x:16,y:16}, b:{x:16,y:18}},
+	{a:{x:16,y:18}, b:{x:14,y:18}},
+	{a:{x:14,y:18}, b:{x:14,y:16}},
+
+	// Polygon #16
+	{a:{x:19,y:16}, b:{x:21,y:16}},
+	{a:{x:21,y:16}, b:{x:21,y:18}},
+	{a:{x:21,y:18}, b:{x:19,y:18}},
+	{a:{x:19,y:18}, b:{x:19,y:16}},
+
+	// Polygon #17
+	{a:{x:2,y:17}, b:{x:3,y:17}},
+	{a:{x:3,y:17}, b:{x:3,y:18}},
+	{a:{x:3,y:18}, b:{x:2,y:18}},
+	{a:{x:2,y:18}, b:{x:2,y:17}},
+
+	// Polygon #18
+	{a:{x:5,y:18}, b:{x:6,y:18}},
+	{a:{x:6,y:18}, b:{x:6,y:19}},
+	{a:{x:6,y:19}, b:{x:5,y:19}},
+	{a:{x:5,y:19}, b:{x:5,y:18}}
+
+];
+
+
+// MOUSE	
+var Mouse = {
+	x: canvas.width/2+10,
+	y: canvas.height/2
+};
+
+canvas.onmousemove = function(event){	
+	Mouse.x = event.clientX;
+	Mouse.y = event.clientY;
+	updateCanvas = true;
+};
 
 // Handle keyboard controls
 var keysDown = {};
