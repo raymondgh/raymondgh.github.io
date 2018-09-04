@@ -47,6 +47,10 @@ var render = function () {
 
 	})
 
+	ctx.fillStyle = "#0f0";
+	ctx.fillRect(hero.x-8 ,hero.y-8, 16,16);
+
+
 
 	// Ray from center of screen to mouse
 	let ray = {
@@ -153,7 +157,8 @@ var segments = [
 
 	// Polygon #1
 	{a:{x:1,y:1}, b:{x:3,y:1}},
-	{a:{x:3,y:1}, b:{x:1,y:3}},
+	{a:{x:3,y:1}, b:{x:3,y:3}},
+	{a:{x:3,y:3}, b:{x:1,y:3}},
 	{a:{x:1,y:3}, b:{x:1,y:1}},
 
 	// Polygon #2
@@ -161,7 +166,8 @@ var segments = [
 	{a:{x:5,y:1}, b:{x:5,y:5}},
 	{a:{x:5,y:5}, b:{x:1,y:5}},
 	{a:{x:1,y:5}, b:{x:1,y:4}},
-	{a:{x:1,y:4}, b:{x:4,y:1}},
+	{a:{x:1,y:4}, b:{x:4,y:4}},
+	{a:{x:4,y:4}, b:{x:4,y:1}},
 
 	// Polygon #3
 	{a:{x:13,y:1}, b:{x:14,y:1}},
@@ -263,6 +269,61 @@ var segments = [
 
 ];
 
+let obstaclePolygons = [
+
+[{x:1,y:1},{x:3,y:1},{x:3,y:3},{x:1,y:3}]
+, [{x:1,y:4},{x:5,y:4},{x:5,y:5},{x:1,y:5}]
+, [{x:4,y:1},{x:5,y:1},{x:5,y:4},{x:4,y:4}]
+, [{x:13,y:1},{x:14,y:1},{x:14,y:3},{x:13,y:3}]
+, [{x:21,y:2},{x:24,y:2},{x:24,y:3},{x:21,y:3}]
+, [{x:7,y:5},{x:8,y:5},{x:8,y:9},{x:7,y:9}]
+, [{x:10,y:4},{x:17,y:4},{x:17,y:5},{x:10,y:5}]
+, [{x:21,y:6},{x:22,y:6},{x:22,y:7},{x:21,y:7}]
+, [{x:10,y:7}, {x:11,y:7}, {x:11,y:11},{x:10,y:11}]
+, [{x:13,y:7}, {x:14,y:7}, {x:14,y:11},{x:13,y:11}]
+, [{x:17,y:7}, {x:18,y:7}, {x:18,y:10},{x:17,y:10}]
+, [{x:17,y:10},{x:23,y:10},{x:23,y:11},{x:17,y:11}]
+, [{x:3,y:11},{x:7,y:11},{x:7,y:15},{x:3,y:15}]
+, [{x:12,y:13},{x:20,y:13},{x:20,y:14},{x:12,y:14}]
+, [{x:23,y:15},{x:24,y:15},{x:24,y:16},{x:23,y:16}]
+, [{x:9,y:16}, {x:11,y:16},{x:11,y:18},{x:9,y:18} ]
+, [{x:14,y:16},{x:16,y:16},{x:16,y:18},{x:14,y:18}]
+, [{x:19,y:16},{x:21,y:16},{x:21,y:18},{x:19,y:18}]
+, [{x:2,y:17},{x:3,y:17},{x:3,y:18},{x:2,y:18}]
+, [{x:5,y:18},{x:6,y:18},{x:6,y:19},{x:5,y:19}]
+];
+
+
+
+
+
+
+// checks if a point is in a rectangle
+function obstacleCollision(point, object) {
+	if (point.x > object[0].x * units &&
+		point.x < object[2].x * units &&
+		point.y > object[0].y * units &&
+		point.y < object[2].y * units ) {
+		return true
+	} else {
+		return false
+	}
+}  
+
+//checks if point is in list of rectangles
+function anyCollision (point, listOfObjects) {
+	if (listOfObjects.some(function(object) {
+		return obstacleCollision(point, object);
+	}
+	)) {
+		return true
+	} else {
+		return false
+	}
+}
+
+
+
 
 // MOUSE	
 var Mouse = {
@@ -290,22 +351,40 @@ addEventListener("keyup", function (e) {
 
 // Update game objects
 var update = function (modifier) {
+
+	let newHero = hero;
+	let newXHero = {x: hero.x, y: hero.y};
+	let newYHero = {x: hero.x, y: hero.y};
+
+
 	if (38 in keysDown || 87 in keysDown) { // Player holding up
-		hero.y -= hero.speed * modifier;
+		newYHero.y -= hero.speed * modifier;
 	}
 	if (40 in keysDown || 83 in keysDown) { // Player holding down
-		hero.y += hero.speed * modifier;
+		newYHero.y += hero.speed * modifier;
 	}
 	if (37 in keysDown || 65 in keysDown) { // Player holding left
-		hero.x -= hero.speed * modifier;
+		newXHero.x -= hero.speed * modifier;
 	}
 	if (39 in keysDown || 68 in keysDown) { // Player holding right
-		hero.x += hero.speed * modifier;
+		newXHero.x += hero.speed * modifier;
 	}
-	if (32 in keysDown) { // Player holding right
+	if (32 in keysDown) { // Player hit space
 		hero.x = 45
 		hero.y = 20
 	}
+
+	if (!anyCollision(newYHero, obstaclePolygons)) {
+		hero.x = newHero.x;
+		hero.y = newYHero.y;
+	} 
+
+	if (!anyCollision(newXHero, obstaclePolygons)) {
+		hero.x = newXHero.x;
+		hero.y = newHero.y;
+	}
+
+
 
 
 };
