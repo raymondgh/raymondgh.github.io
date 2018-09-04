@@ -370,8 +370,8 @@ var update = function (modifier) {
 		newXHero.x += hero.speed * modifier;
 	}
 	if (32 in keysDown) { // Player hit space
-		hero.x = 45
-		hero.y = 20
+		newXHero.x = 45
+		newYHero.y = 20
 	}
 
 	if (!anyCollision(newYHero, obstaclePolygons)) {
