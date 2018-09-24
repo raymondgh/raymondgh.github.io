@@ -340,8 +340,8 @@ peer2connection.ondatachannel = event => {
 	peer2datachannel.onopen = event => {
 		console.log("15. P2 data channel opened as peer2datachannel");
 		console.log("16. All set! try the following commands:");
-		console.log('    peer1datachannel.send("Knock knock")');
-		console.log('    peer2datachannel.send("Who\'s there?")');
+		console.log('    peer1datachannel.send("Hello World!")');
+		console.log('    peer2datachannel.send("Go away.")');
 	}
 
 	peer2datachannel.onclose = event => {
