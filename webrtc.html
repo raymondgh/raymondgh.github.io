@@ -12,6 +12,7 @@
 
 // keep track of who the server knows about
 let listOfPeers = ['Peer1', 'Peer2'];
+console.log("01. Our signaling server confirms that two peers exist");
 
 // make sure signal won't crash the server
 function parseSignal(rawSignal) {
@@ -52,9 +53,11 @@ function processSignal(message) {
 
 		// these functions are how the peer handles signals from the server
 		case 'Peer1':
+			console.log("    The server sends the message to peer 1");
 			peer1SignalHandler(payload);
 			break;
 		case 'Peer2':
+			console.log("    The server sends the message to peer 2");
 			peer2SignalHandler(payload);
 			break;
 		default:
@@ -73,16 +76,23 @@ function processSignal(message) {
 
 // begin by creating an RTCPeerConnection
 let peer1connection = new RTCPeerConnection();
+console.log("02. P1 creates a new RTCPeerConnection() object, peer1connection");
+
 
 // we need a data channel (as opposed to video or audio) for this demo!
 let peer1datachannel = peer1connection.createDataChannel('myFirstDataChannel')
+console.log("03. P1 creates a data channel, peer1datachannel");
 
 // now let's create an offer to send to peer2
 peer1connection.createOffer().then((OfferRTCSessionDescription) => {
 
+	console.log("06. P1 creates a connection offer, OfferRTCSessionDescription")
+
 	// peer1, the offerer, will set the offer to be its Local Description
 	// setting Local Description triggers the peer1connection.onicecandidate event!!
 	peer1connection.setLocalDescription(OfferRTCSessionDescription);
+	console.log("07. P1 sets its local description with this offer")
+
 
 	// Prepare a message to send to peer 2
 	let message = {	source: 'Peer1',
@@ -90,6 +100,7 @@ peer1connection.createOffer().then((OfferRTCSessionDescription) => {
 					messageType: 'data-offer',
 					sessionDescription: OfferRTCSessionDescription
 				};
+	console.log("08. P1 sends the offer in a JSON with some metadata via the server")
 
 	// send OfferRTCSessionDescription to peer2 via signaling server
 	peer1SendMessageViaSignalingServer(message);
@@ -116,7 +127,8 @@ peer1connection.onicecandidate = event => {
 					messageType: 'ice-candidate',
 					candidate: event.candidate
 				};
-
+	
+	console.log("    ICE Candidate handled by P1 and sent via the server")
 	peer1SendMessageViaSignalingServer(message);
 }
 
@@ -169,6 +181,7 @@ function peer1HandleDataAnswer(message) {
 
 	// set the remote description as the offer session description
 	peer1connection.setRemoteDescription(message.sessionDescription);
+	console.log("13. P1 sets the received answer as its remote description")
 }
 
 
@@ -176,16 +189,15 @@ function peer1HandleDataAnswer(message) {
 
 // some data channel handlers for peer 1
 peer1datachannel.onopen = event => {
-	console.log("PEER 1: Hey, my data channel was opened!");
-	console.log("Use the command peer1datachannel.send() to send something to Peer 2");
+	console.log("14. Ice candidates from both peers match. P1's Data channel opened.");
 }
 
 peer1datachannel.onclose = event => {
-	console.log("PEER 1: Hey, my data channel was closed!");
+	console.log("P1: Hey, my data channel was closed!");
 }
 
 peer1datachannel.onmessage = event => {
-	console.log("PEER 1: Hey, I just got this message:");
+	console.log("P1: I just got this message:");
 	console.log(event.data);
 }
 
@@ -196,8 +208,12 @@ peer1datachannel.onmessage = event => {
 ////////////
 
 let peer2connection = new RTCPeerConnection();
+console.log("04. P2 creates a new RTCPeerConnection() object, peer2connection");
+
 
 let peer2datachannel;
+console.log("05. P2 creates a placeholder data channel, peer2datachannel");
+
 
 // when the signaling server sends something to peer2, parse it and react
 function peer2SignalHandler(signal) {
@@ -215,7 +231,7 @@ function peer2SignalHandler(signal) {
 			peer2HandleIceCandidate(message);
 			break;
 		default:
-			console.log("PEER 2: We got something from the server but we don't know what it is!");
+			console.log("P2: We got something from the server but we don't know what it is!");
 			console.log("Take a look for yourself:", signal);
 	}
 }
@@ -226,13 +242,17 @@ function peer2HandleDataOffer(message) {
 
 	// set the remote description as the offer session description
 	peer2connection.setRemoteDescription(message.sessionDescription);
+	console.log("09. P2 sets the received offer as its remote description")
 
 	// create an answer to send back to peer 1 via the signaling server
 	peer2connection.createAnswer().then((AnswerRTCSessionDescription) => {
+	console.log("10. P2 creates a connection answer, AnswerRTCSessionDescription")
+
 
 		// set the localdescription as the answer
 		// setting Local Description triggers the peer2connection.onicecandidate event!!
 		peer2connection.setLocalDescription(AnswerRTCSessionDescription);
+		console.log("11. P2 sets the answer as its local description")
 
 
 		// Prepare a message to send to peer 2
@@ -241,10 +261,11 @@ function peer2HandleDataOffer(message) {
 						messageType: 'data-answer',
 						sessionDescription: AnswerRTCSessionDescription
 					};
+		
+		console.log("12. P2 sends the answer in a JSON with some metadata via the server")
 
 		// send AnswerRTCSessionDescription to peer1 via signaling server
 		peer2SendMessageViaSignalingServer(message)
-
 	});
 }
 
@@ -259,11 +280,11 @@ function peer2HandleIceCandidate(message) {
 	peer2connection.addIceCandidate(candidate).then(() =>
 
 		// it worked!
-		() => console.log('PEER 2: Yay, we added a candidate.'),
+		() => console.log('P2: Yay, we added a candidate.'),
 
 		// it didn't work!
 		err => {
-			console.log('PEER 2: Oh no! We failed to add the candidate');
+			console.log('P2: Oh no! We failed to add the candidate');
 			console.log("Here's the error:", err);
 		});
 }
@@ -278,6 +299,7 @@ peer2connection.onicecandidate = event => {
 					messageType: 'ice-candidate',
 					candidate: event.candidate
 				};
+	console.log("    ICE Candidate handled by P2 and sent via the server")
 
 	peer2SendMessageViaSignalingServer(message);
 }
@@ -300,19 +322,20 @@ peer2connection.ondatachannel = event => {
 	// create data channel object for peer 2
 	peer2datachannel = event.channel;
 
-
 	// some data channel handlers for peer 1
 	peer2datachannel.onopen = event => {
-		console.log("PEER 2: Hey, my data channel was opened!");
-		console.log("Use the command peer2datachannel.send() to send something to Peer 1");
+		console.log("15. P2's data channel is opened");
+		console.log("16. All set! try the following commands:");
+		console.log("    peer1datachannel.send('Hi friend')");
+		console.log("    peer2datachannel.send('Hi pal')");
 	}
 
 	peer2datachannel.onclose = event => {
-		console.log("PEER 2: Hey, my data channel was closed!");
+		console.log("P2: Hey, my data channel was closed!");
 	}
 
 	peer2datachannel.onmessage = event => {
-		console.log("PEER 2: Hey, I just got this message:");
+		console.log("P2: I just got this message:");
 		console.log(event.data);
 	}
 
