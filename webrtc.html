@@ -161,7 +161,7 @@ function peer1SignalHandler(signal) {
 function peer1HandleIceCandidate(message) {
 
 	// get the candidate from the message
-	let candidate = message.candidate;
+	let candidate = new RTCIceCandidate(message.candidate);
 
 	// add the ice candidate to the connection
 	peer1connection.addIceCandidate(candidate).then(() =>
@@ -275,7 +275,7 @@ function peer2HandleDataOffer(message) {
 function peer2HandleIceCandidate(message) {
 
 	// get the candidate from the message
-	let candidate = message.candidate;
+	let candidate = new RTCIceCandidate(message.candidate);
 
 	// add the ice candidate to the connection
 	peer2connection.addIceCandidate(candidate).then(() =>
