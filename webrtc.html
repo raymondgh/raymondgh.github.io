@@ -130,7 +130,7 @@ peer1connection.onicecandidate = event => {
 						candidate: event.candidate
 					};
 		
-		console.log("    ICE Candidate handled by P1 and sent to P2 via signaling server")
+		console.log("    ICE Candidate generated and handled by P1 and sent to P2 via signaling server")
 		peer1SendMessageViaSignalingServer(message);
 	} else {
 		// no more candidates to send
@@ -195,7 +195,7 @@ function peer1HandleDataAnswer(message) {
 
 // some data channel handlers for peer 1
 peer1datachannel.onopen = event => {
-	console.log("14. Ice candidates from both peers match; P1 data channel opened");
+	console.log("14. Ice candidates from both peers agreed upon; P1 data channel opened");
 }
 
 peer1datachannel.onclose = event => {
@@ -215,7 +215,6 @@ peer1datachannel.onmessage = event => {
 
 let peer2connection = new RTCPeerConnection();
 console.log("04. P2 creates a new RTCPeerConnection() object, peer2connection");
-
 
 let peer2datachannel;
 console.log("05. P2 creates a placeholder data channel, peer2datachannel");
@@ -307,7 +306,7 @@ peer2connection.onicecandidate = event => {
 						messageType: 'ice-candidate',
 						candidate: event.candidate
 					};
-		console.log("    ICE Candidate handled by P2 and sent to P1 via signaling server")
+		console.log("    ICE Candidate generated and handled by P2 and sent to P1 via signaling server")
 
 		peer2SendMessageViaSignalingServer(message);
 	} else {
