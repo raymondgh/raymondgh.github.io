@@ -12,7 +12,7 @@
 
 // keep track of who the signaling server knows about
 let listOfPeers = ['Peer1', 'Peer2'];
-console.log("01. Our signaling server confirms that two peers exist");
+console.log("01. Signaling server confirms that two peers exist");
 
 // make sure signal won't crash the signaling server
 function parseSignal(rawSignal) {
@@ -156,7 +156,7 @@ function peer1SignalHandler(signal) {
 			peer1HandleIceCandidate(message);
 			break;
 		default:
-			console.log("PEER 1: We got something from the signaling server but we don't know what it is!");
+			console.log("PR1: We got something from the signaling server but we don't know what it is!");
 			console.log("Take a look for yourself:", signal);
 	}
 }
@@ -172,11 +172,11 @@ function peer1HandleIceCandidate(message) {
 	peer1connection.addIceCandidate(candidate).then(() =>
 
 		// it worked!
-		() => console.log('PEER 1: Yay, we added a candidate.'),
+		console.log('    P2 Ice Candidate successfully added to peer1connection'),
 
 		// it didn't work!
 		err => {
-			console.log('PEER 1: Oh no! We failed to add the candidate');
+			console.log('PR 1: Oh no! We failed to add the candidate');
 			console.log("Here's the error:", err);
 		});
 }
@@ -195,7 +195,7 @@ function peer1HandleDataAnswer(message) {
 
 // some data channel handlers for peer 1
 peer1datachannel.onopen = event => {
-	console.log("14. Ice candidates from both peers match. P1's Data channel opened.");
+	console.log("14. Ice candidates from both peers match; P1 data channel opened");
 }
 
 peer1datachannel.onclose = event => {
@@ -286,7 +286,7 @@ function peer2HandleIceCandidate(message) {
 	peer2connection.addIceCandidate(candidate).then(() =>
 
 		// it worked!
-		() => console.log('P2: Yay, we added a candidate.'),
+		console.log('    P1 Ice Candidate successfully added to peer2connection'),
 
 		// it didn't work!
 		err => {
@@ -338,10 +338,10 @@ peer2connection.ondatachannel = event => {
 
 	// some data channel handlers for peer 1
 	peer2datachannel.onopen = event => {
-		console.log("15. P2's data channel is opened");
+		console.log("15. P2 data channel opened as peer2datachannel");
 		console.log("16. All set! try the following commands:");
-		console.log("    peer1datachannel.send('Hi friend')");
-		console.log("    peer2datachannel.send('Hi pal')");
+		console.log('    peer1datachannel.send("Knock knock")');
+		console.log('    peer2datachannel.send("Who\'s there?")');
 	}
 
 	peer2datachannel.onclose = event => {
@@ -352,8 +352,6 @@ peer2connection.ondatachannel = event => {
 		console.log("P2: I just got this message:");
 		console.log(event.data);
 	}
-
-
 }
 
 </script>
